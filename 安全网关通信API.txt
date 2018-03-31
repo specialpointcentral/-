@@ -1,5 +1,5 @@
 ﻿
-安全网关 - 事件处理及通信协议文档 [2018.3.12]
+安全网关 - 前后端交互API文档 [2018.3.12]
 
 更新内容：
     v2：
@@ -125,35 +125,378 @@
                 <= 基本规则管理-ARP规则-获取[2]，起始索引(从0开始)[4]，数量[4]
                 => 基本规则管理-ARP规则-获取结果[2]，起始索引(从0开始)[4]，数量[4]，{数据库ID[4]，IP地址[4]，MAC地址[6]}+
                 => 基本规则管理-ARP规则-获取失败[2]，失败原因[1]
+                请求参数：
+                        名称                类型        是否必需        描述
+                        Action              Short       是              操作码 OPFS_RuleArp_List
+                        beginIndex          Integer     是              起始索引(从0开始)
+                        number              Integer     是              数量
+                返回参数：
+                    成功后返回：
+                        名称                类型            描述
+                        code                Short           返回值 OPFC_RuleArp_List_Ret 
+                        beginIndex          Integer         起始索引(从0开始)
+                        number              Integer         数量
+                        data                array(pack)     数组类型，包含数据数量与number一致
+
+                        其中pack定义：
+                        名称                类型            描述
+                        dataBaseID         Integer          数据库ID
+                        IP                 String      `    IP地址，以xxx.xxx.xxx.xxx表示
+                        MAC                String           MAC地址
+
+                    失败后返回：
+                        名称                类型            描述
+                        code                Short           返回值 OPFC_RuleArp_List_Ret 
+                        data                array(error)    数组类型
+
+                        其中error定义：
+                        名称                类型            描述
+                        error               Integer         错误代码
+                        msg                 String          错误提示
+
+                请求示例：
+                        https://example.com/FFSapi.php?Action=OPFS_RuleArp_List
+                        &beginIndex=0
+                        &number=2
+                        &<公共请求参数>
+                返回示例:
+                    json格式：
+                        成功：
+                        {
+                            "code": OPFC_RuleArp_List_Ret,
+                            "beginIndex": 0,
+                            "number": 2,
+                            "data": [
+                                {"dataBaseID": 1,"IP": "192.168.1.1","MAC": "4A-45-20-B9-A1-58"},
+                                {"dataBaseID": 2,"IP": "192.168.1.2","MAC": "4A-45-20-B9-A1-59"}
+                            ]
+                        }
+                        失败：
+                        {
+                            "code": OPFC_RuleArp_List_Err,
+                            "data": {
+                                "error": ERR_NO_MORE_RES,
+                                "msg": "内存不足",
+                            }
+                        }
+
             事件：点“添加”              【FFS_RuleArp_Add    】
                 <= 基本规则管理-ARP规则-添加[2]，IP地址[4]，MAC地址[6]
                 => 基本规则管理-ARP规则-添加-成功[2]
                 => 基本规则管理-ARP规则-添加-失败[2]，失败原因[1]
+                请求参数：
+                        名称                类型        是否必需        描述
+                        Action              Short       是              操作码 OPFS_RuleArp_Add
+                        IP                  String      是              IP地址，格式为：xxx.xxx.xxx.xxx(xxx为十进制)
+                        MAC                 String      是              MAC地址，格式为：xx-xx-xx-xx-xx-xx(xx为十六进制)
+                返回参数：
+                    成功后返回：
+                        名称                类型            描述
+                        code                Short           返回值 OPFC_RuleArp_Add_Ok 
+                        data                null            返回空值      
+                    失败后返回：
+                        名称                类型            描述
+                        code                Short           返回值 OPFC_RuleArp_Add_Err 
+                        data                array(error)    数组类型
+
+                        其中error定义：
+                        名称                类型            描述
+                        error               Integer         错误代码
+                        msg                 String          错误提示
+
+                请求示例：
+                        https://example.com/FFSapi.php?Action=OPFS_RuleArp_Add
+                        &IP=192.168.1.1
+                        &MAC=4A-45-20-B9-A1-58
+                        &<公共请求参数>
+                返回示例:
+                    json格式：
+                        成功：
+                        {
+                            "code": OPFC_RuleArp_Add_Ok,
+                            "data": null,
+                        }
+                        失败：
+                        {
+                            "code": OPFC_RuleArp_Add_Err,
+                            "data": {
+                                "error": ERR_NO_MORE_RES,
+                                "msg": "内存不足",
+                            }
+                        }
+
             事件：点“激活全部”          【FFS_RuleArp_Enable 】
                 <= 基本规则管理-ARP规则-激活全部[2]
                 => 基本规则管理-ARP规则-激活全部-成功[2]
                 => 基本规则管理-ARP规则-激活全部-失败[2]，失败原因[1]
+                请求参数：
+                        名称                类型        是否必需        描述
+                        Action              Short       是              操作码 OPFS_RuleArp_Enable
+                返回参数：
+                    成功后返回：
+                        名称                类型            描述
+                        code                Short           返回值 OPFC_RuleArp_Enable_Ok 
+                        data                null            返回空值      
+                    失败后返回：
+                        名称                类型            描述
+                        code                Short           返回值 OPFC_RuleArp_Enable_Err 
+                        data                array(error)    数组类型
+
+                        其中error定义：
+                        名称                类型            描述
+                        error               Integer         错误代码
+                        msg                 String          错误提示
+
+                请求示例：
+                        https://example.com/FFSapi.php?Action=OPFS_RuleArp_Enable
+                        &<公共请求参数>
+                返回示例:
+                    json格式：
+                        成功：
+                        {
+                            "code": OPFC_RuleArp_Enable_Ok,
+                            "data": null,
+                        }
+                        失败：
+                        {
+                            "code": OPFC_RuleArp_Enable_Err,
+                            "data": {
+                                "error": ERR_NO_MORE_RES,
+                                "msg": "内存不足",
+                            }
+                        }
+
             事件：点“禁用全部”          【FFS_RuleArp_Disable】
                 <= 基本规则管理-ARP规则-禁用全部[2]
                 => 基本规则管理-ARP规则-禁用全部-成功[2]
                 => 基本规则管理-ARP规则-禁用全部-失败[2]，失败原因[1]
+                请求参数：
+                        名称                类型        是否必需        描述
+                        Action              Short       是              操作码 OPFS_RuleArp_Disable
+                返回参数：
+                    成功后返回：
+                        名称                类型            描述
+                        code                Short           返回值 OPFC_RuleArp_Disable_Ok 
+                        data                null            返回空值      
+                    失败后返回：
+                        名称                类型            描述
+                        code                Short           返回值 OPFC_RuleArp_Disable_Err 
+                        data                array(error)    数组类型
+
+                        其中error定义：
+                        名称                类型            描述
+                        error               Integer         错误代码
+                        msg                 String          错误提示
+
+                请求示例：
+                        https://example.com/FFSapi.php?Action=OPFS_RuleArp_Disable
+                        &<公共请求参数>
+                返回示例:
+                    json格式：
+                        成功：
+                        {
+                            "code": OPFC_RuleArp_Disable_Ok,
+                            "data": null,
+                        }
+                        失败：
+                        {
+                            "code": OPFC_RuleArp_Disable_Err,
+                            "data": {
+                                "error": ERR_NO_MORE_RES,
+                                "msg": "内存不足",
+                            }
+                        }
+
             事件：点“全部删除”          【FFS_RuleArp_Cls    】
                 <= 基本规则管理-ARP规则-全部删除[2]
                 => 基本规则管理-ARP规则-全部删除-成功[2]
                 => 基本规则管理-ARP规则-全部删除-失败[2]，失败原因[1]
+                请求参数：
+                        名称                类型        是否必需        描述
+                        Action              Short       是              操作码 OPFS_RuleArp_Cls
+                返回参数：
+                    成功后返回：
+                        名称                类型            描述
+                        code                Short           返回值 OPFC_RuleArp_Cls_Ok 
+                        data                null            返回空值      
+                    失败后返回：
+                        名称                类型            描述
+                        code                Short           返回值 OPFC_RuleArp_Cls_Err 
+                        data                array(error)    数组类型
+
+                        其中error定义：
+                        名称                类型            描述
+                        error               Integer         错误代码
+                        msg                 String          错误提示
+
+                请求示例：
+                        https://example.com/FFSapi.php?Action=OPFS_RuleArp_Cls
+                        &<公共请求参数>
+                返回示例:
+                    json格式：
+                        成功：
+                        {
+                            "code": OPFC_RuleArp_Cls_Ok,
+                            "data": null,
+                        }
+                        失败：
+                        {
+                            "code": OPFC_RuleArp_Cls_Err,
+                            "data": {
+                                "error": ERR_NO_MORE_RES,
+                                "msg": "内存不足",
+                            }
+                        }
+
             事件：点“编辑”              【FFS_RuleArp_Edit   】
                 <= 基本规则管理-ARP规则-编辑[2]，源IP地址[4]，新IP地址[4]，MAC地址[6]
                 => 基本规则管理-ARP规则-编辑-成功[2]
                 => 基本规则管理-ARP规则-编辑-失败[2]，失败原因[1]
+                请求参数：
+                        名称                类型        是否必需        描述
+                        Action              Short       是              操作码 OPFS_RuleArp_Edit
+                        fromIP              String      是              IP地址，格式为：xxx.xxx.xxx.xxx(xxx为十进制)
+                        newIP               String      是              IP地址，格式为：xxx.xxx.xxx.xxx(xxx为十进制)
+                        MAC                 String      是              MAC地址，格式为：xx-xx-xx-xx-xx-xx(xx为十六进制)
+                返回参数：
+                    成功后返回：
+                        名称                类型            描述
+                        code                Short           返回值 OPFC_RuleArp_Edit_Ok 
+                        data                null            返回空值      
+                    失败后返回：
+                        名称                类型            描述
+                        code                Short           返回值 OPFC_RuleArp_Edit_Err 
+                        data                array(error)    数组类型
+
+                        其中error定义：
+                        名称                类型            描述
+                        error               Integer         错误代码
+                        msg                 String          错误提示
+
+                请求示例：
+                        https://example.com/FFSapi.php?Action=OPFS_RuleArp_Edit
+                        &fromIP=192.168.1.1
+                        &newIP=192.168.1.2
+                        &MAC=4A-45-20-B9-A1-58
+                        &<公共请求参数>
+                返回示例:
+                    json格式：
+                        成功：
+                        {
+                            "code": OPFC_RuleArp_Edit_Ok,
+                            "data": null,
+                        }
+                        失败：
+                        {
+                            "code": OPFC_RuleArp_Edit_Err,
+                            "data": {
+                                "error": ERR_NO_MORE_RES,
+                                "msg": "内存不足",
+                            }
+                        }
+
             事件：点“删除”              【FFS_RuleArp_Del    】
                 <= 基本规则管理-ARP规则-删除[2]，IP地址[4]
                 => 基本规则管理-ARP规则-删除-成功[2]
                 => 基本规则管理-ARP规则-删除-失败[2]，失败原因[1]
+                请求参数：
+                        名称                类型        是否必需        描述
+                        Action              Short       是              操作码 OPFS_RuleArp_Del
+                        IP                  String      是              IP地址，格式为：xxx.xxx.xxx.xxx(xxx为十进制)
+                返回参数：
+                    成功后返回：
+                        名称                类型            描述
+                        code                Short           返回值 OPFC_RuleArp_Del_Ok 
+                        data                null            返回空值      
+                    失败后返回：
+                        名称                类型            描述
+                        code                Short           返回值 OPFC_RuleArp_Del_Err 
+                        data                array(error)    数组类型
+
+                        其中error定义：
+                        名称                类型            描述
+                        error               Integer         错误代码
+                        msg                 String          错误提示
+
+                请求示例：
+                        https://example.com/FFSapi.php?Action=OPFS_RuleArp_Del
+                        &IP=192.168.1.1
+                        &<公共请求参数>
+                返回示例:
+                    json格式：
+                        成功：
+                        {
+                            "code": OPFC_RuleArp_Del_Ok,
+                            "data": null,
+                        }
+                        失败：
+                        {
+                            "code": OPFC_RuleArp_Del_Err,
+                            "data": {
+                                "error": ERR_NO_MORE_RES,
+                                "msg": "内存不足",
+                            }
+                        }
+
         MAC黑名单
             事件：刷新 / 点指定页数       【FFS_RuleMac_List   】
                 <= 基本规则管理-MAC黑名单-获取[2]，起始索引(从0开始)[4]，数量[4]
                 => 基本规则管理-MAC黑名单-获取结果[2]，起始索引(从0开始)[4]，数量[4]，{数据库ID[4]，MAC地址[6]}+
                 => 基本规则管理-MAC黑名单-获取失败[2]，失败原因[1]
+                请求参数：
+                        名称                类型        是否必需        描述
+                        Action              Short       是              操作码 OPFS_RuleMac_List
+                        beginIndex          Integer     是              起始索引(从0开始)
+                        number              Integer     是              数量
+                返回参数：
+                    成功后返回：
+                        名称                类型            描述
+                        code                Short           返回值 OPFC_RuleMac_List_Ret 
+                        beginIndex          Integer         起始索引(从0开始)
+                        number              Integer         数量
+                        data                array(pack)     数组类型，包含数据数量与number一致
+
+                        其中pack定义：
+                        名称                类型            描述
+                        dataBaseID         Integer          数据库ID
+                        MAC                String           MAC地址
+
+                    失败后返回：
+                        名称                类型            描述
+                        code                Short           返回值 OPFC_RuleMac_List_Ret 
+                        data                array(error)    数组类型
+
+                        其中error定义：
+                        名称                类型            描述
+                        error               Integer         错误代码
+                        msg                 String          错误提示
+
+                请求示例：
+                        https://example.com/FFSapi.php?Action=OPFS_RuleMac_List
+                        &beginIndex=0
+                        &number=2
+                        &<公共请求参数>
+                返回示例:
+                    json格式：
+                        成功：
+                        {
+                            "code": OPFC_RuleMac_List_Ret,
+                            "beginIndex": 0,
+                            "number": 2,
+                            "data": [
+                                {"dataBaseID": 1,"MAC": "4A-45-20-B9-A1-58"},
+                                {"dataBaseID": 2,"MAC": "4A-45-20-B9-A1-59"}
+                            ]
+                        }
+                        失败：
+                        {
+                            "code": OPFC_RuleMac_List_Err,
+                            "data": {
+                                "error": ERR_NO_MORE_RES,
+                                "msg": "内存不足",
+                            }
+                        }
+
             事件：点“添加”              【FFS_RuleMac_Add    】
                 <= 基本规则管理-MAC黑名单-添加[2]，MAC地址[6]
                 => 基本规则管理-MAC黑名单-添加-成功[2]

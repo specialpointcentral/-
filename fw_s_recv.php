@@ -900,7 +900,7 @@ function FFC_RuleArp_List_Ret($host, $content)
         $package = array(
             "dataBaseID" => $get["databaseID"],
             "IP" => $get["ip1"] . "." . $get["ip2"] . "." . $get["ip3"] . "." . $get["ip4"],
-            "MAC" => $get["MAC"],
+            "MAC" => $get["MAC"],//todo mac地址解析有误
         );
         $data[$i] = $package;//加入数组
         $content = substr($content, 14);//只留下剩余数据

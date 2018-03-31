@@ -473,7 +473,7 @@ function FFS_RuleArp_List($host, $content)
  * 基本规则管理--ARP规则--事件：点“添加”
  *
  * @param $host
- * @param $content array {["IP"]IP,{array([0],[1],[2],[3])},["MAC"]MAC}
+ * @param $content array {["IP"]IP,{array([0],[1],[2],[3])},["MAC"]MAC,array([0],[1],[2],[3],[4],[5])十六进制标注}
  */
 function FFS_RuleArp_Add($host, $content)
 {
@@ -481,7 +481,8 @@ function FFS_RuleArp_Add($host, $content)
     //TODO ip地址格式 short,short,short,short
     $IP = $content["IP"];//IP
     $MAC = $content["MAC"];//MAC
-    $contents = pack('S1C4a6', $opfs, $IP[0], $IP[1], $IP[2], $IP[3], $MAC);
+    $contents = pack('S1C4C4', $opfs, $IP[0], $IP[1], $IP[2], $IP[3],
+        hexdec($MAC[0]),hexdec($MAC[1]),hexdec($MAC[2]),hexdec($MAC[3]),hexdec($MAC[4]),hexdec($MAC[5]));
     send_fnc($host, $contents);
 }
 
@@ -541,7 +542,7 @@ function FFS_RuleArp_Edit($host, $content)
     $opfs = OPFS::OPFS_RuleArp_Edit;
     $fromIP = $content["fromIP"];
     $newIP = $content["newIP"];
-    $MAC = $content["MAC"];
+    $MAC = $content["MAC"];//todo mac解析错误
     $contents = pack('S1C4C4a6', $opfs,
         $fromIP[0], $fromIP[1], $fromIP[2], $fromIP[3],
         $newIP[0], $newIP[1], $newIP[2], $newIP[3],
